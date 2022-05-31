@@ -20,11 +20,14 @@ UserNotFoundException = HTTPException(
 
 
 class Endereco(BaseModel):
-    cep: int
-    codigo_ibge: int
+    cep: str
+    codigo_ibge: Union[int, None] = None
     uf: str
     cidade: str
-    logradouro: str
+    bairro: str
+    rua: str
+    numero: int
+    complemento: Union[str, None] = None
 
 
 class User(BaseModel):
@@ -56,7 +59,7 @@ async def resolve_github(user: User, database: Client):
         database.collection("users").document(str(user.id)).update({"github": github_info.dict()})
 
 
-router = APIRouter(prefix="/user", dependencies=[Depends(oauth2_scheme)])
+router = APIRouter(prefix="/user", dependencies=[])  # Depends(oauth2_scheme
 
 
 @router.get("/", response_model=List[User])
